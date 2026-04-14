@@ -35,6 +35,10 @@ export async function saveGameCover(file: FormDataEntryValue | null, baseName: s
   const fileName = `${normalizedBaseName}-${Date.now()}${extension}`;
   const buffer = Buffer.from(await file.arrayBuffer());
 
+  if (process.env.VERCEL && !process.env.BLOB_READ_WRITE_TOKEN) {
+    throw new Error("Falta configurar BLOB_READ_WRITE_TOKEN en Vercel para subir imagenes.");
+  }
+
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     const blob = await put(`catalog/${fileName}`, buffer, {
       access: "public",

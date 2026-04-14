@@ -46,24 +46,39 @@ async function updateConsole(_: CrudFormState, formData: FormData): Promise<Crud
     };
   }
 
-  const currentImage = rawValues.current_image.trim();
-  const uploadedImage = await saveGameCover(formData.get("image"), parsed.data.name);
-  const image = resolveCoverName(uploadedImage, currentImage);
+  let consoleId: number;
 
-  const consoleItem = await prisma.console.update({
-    where: { id: parsed.data.id },
-    data: {
-      name: parsed.data.name,
-      manufacturer: parsed.data.manufacturer,
-      releasedate: new Date(parsed.data.releasedate),
-      description: parsed.data.description,
-      image,
-    },
-  });
+  try {
+    const currentImage = rawValues.current_image.trim();
+    const uploadedImage = await saveGameCover(formData.get("image"), parsed.data.name);
+    const image = resolveCoverName(uploadedImage, currentImage);
+
+    const consoleItem = await prisma.console.update({
+      where: { id: parsed.data.id },
+      data: {
+        name: parsed.data.name,
+        manufacturer: parsed.data.manufacturer,
+        releasedate: new Date(parsed.data.releasedate),
+        description: parsed.data.description,
+        image,
+      },
+    });
+
+    consoleId = consoleItem.id;
+  } catch (error) {
+    return {
+      formError:
+        error instanceof Error
+          ? error.message
+          : "No fue posible actualizar la consola en este momento.",
+      fieldErrors: {},
+      values: rawValues,
+    };
+  }
 
   revalidatePath("/consoles");
-  revalidatePath(`/consoles/${consoleItem.id}`);
-  redirect(`/consoles/${consoleItem.id}?alert=console-updated`);
+  revalidatePath(`/consoles/${consoleId}`);
+  redirect(`/consoles/${consoleId}?alert=console-updated`);
 }
 
 function formatDateForInput(date: Date) {

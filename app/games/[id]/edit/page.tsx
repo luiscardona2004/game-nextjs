@@ -51,27 +51,42 @@ async function updateGame(_: CrudFormState, formData: FormData): Promise<CrudFor
     }
   }
 
-  const currentCover = rawValues.current_cover.trim()
-  const uploadedCover = await saveGameCover(formData.get('cover'), parsed.data.title)
-  const cover = resolveCoverName(uploadedCover, currentCover)
+  let gameId: number
 
-  const game = await prisma.game.update({
-    where: { id: parsed.data.id },
-    data: {
-      title: parsed.data.title,
-      cover,
-      developer: parsed.data.developer,
-      releasedate: new Date(parsed.data.releasedate),
-      price: parsed.data.price,
-      genre: parsed.data.genre,
-      description: parsed.data.description,
-      console_id: parsed.data.console_id,
-    },
-  })
+  try {
+    const currentCover = rawValues.current_cover.trim()
+    const uploadedCover = await saveGameCover(formData.get('cover'), parsed.data.title)
+    const cover = resolveCoverName(uploadedCover, currentCover)
+
+    const game = await prisma.game.update({
+      where: { id: parsed.data.id },
+      data: {
+        title: parsed.data.title,
+        cover,
+        developer: parsed.data.developer,
+        releasedate: new Date(parsed.data.releasedate),
+        price: parsed.data.price,
+        genre: parsed.data.genre,
+        description: parsed.data.description,
+        console_id: parsed.data.console_id,
+      },
+    })
+
+    gameId = game.id
+  } catch (error) {
+    return {
+      formError:
+        error instanceof Error
+          ? error.message
+          : 'No fue posible actualizar el juego en este momento.',
+      fieldErrors: {},
+      values: rawValues,
+    }
+  }
 
   revalidatePath('/games')
-  revalidatePath(`/games/${game.id}`)
-  redirect(`/games/${game.id}?alert=game-updated`)
+  revalidatePath(`/games/${gameId}`)
+  redirect(`/games/${gameId}?alert=game-updated`)
 }
 
 function formatDateForInput(date: Date) {

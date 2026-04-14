@@ -18,47 +18,56 @@ export default function FormActionButton({
   confirmMessage,
 }: FormActionButtonProps) {
   const { pending } = useFormStatus();
-  const skipConfirmRef = useRef(false);
+  const hiddenSubmitRef = useRef<HTMLButtonElement>(null);
 
   return (
-    <button
-      type="submit"
-      disabled={pending}
-      onClick={async (event) => {
-        if (pending) return;
-        if (confirmMessage && !skipConfirmRef.current) {
-          event.preventDefault();
+    <>
+      {confirmMessage ? (
+        <>
+          <button
+            type="button"
+            disabled={pending}
+            onClick={async () => {
+              if (pending) return;
 
-          const result = await Swal.fire({
-            title: "Confirmar accion",
-            text: confirmMessage,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Confirmar",
-            cancelButtonText: "Cancelar",
-            confirmButtonColor: "#06b6d4",
-            cancelButtonColor: "#334155",
-            background: "#0f172a",
-            color: "#e2e8f0",
-          });
+              const result = await Swal.fire({
+                title: "Confirmar accion",
+                text: confirmMessage,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Confirmar",
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#06b6d4",
+                cancelButtonColor: "#334155",
+                background: "#0f172a",
+                color: "#e2e8f0",
+              });
 
-          if (result.isConfirmed) {
-            skipConfirmRef.current = true;
-            event.currentTarget.form?.requestSubmit();
-            setTimeout(() => {
-              skipConfirmRef.current = false;
-            }, 0);
-          }
-        }
-      }}
-      className={`${className} ${pending ? "cursor-not-allowed opacity-70" : ""}`}
-    >
-      <span className="inline-flex items-center justify-center gap-2">
-        {pending && (
-          <span className="loading loading-ring loading-sm" />
-        )}
-        {pending ? pendingLabel : label}
-      </span>
-    </button>
+              if (result.isConfirmed) {
+                hiddenSubmitRef.current?.click();
+              }
+            }}
+            className={`${className} ${pending ? "cursor-not-allowed opacity-70" : ""}`}
+          >
+            <span className="inline-flex items-center justify-center gap-2">
+              {pending && <span className="loading loading-ring loading-sm" />}
+              {pending ? pendingLabel : label}
+            </span>
+          </button>
+          <button ref={hiddenSubmitRef} type="submit" hidden disabled={pending} aria-hidden="true" />
+        </>
+      ) : (
+        <button
+          type="submit"
+          disabled={pending}
+          className={`${className} ${pending ? "cursor-not-allowed opacity-70" : ""}`}
+        >
+          <span className="inline-flex items-center justify-center gap-2">
+            {pending && <span className="loading loading-ring loading-sm" />}
+            {pending ? pendingLabel : label}
+          </span>
+        </button>
+      )}
+    </>
   );
 }

@@ -40,21 +40,36 @@ async function createConsole(_: CrudFormState, formData: FormData): Promise<Crud
     };
   }
 
-  const uploadedImage = await saveGameCover(formData.get("image"), parsed.data.name);
-  const image = resolveCoverName(uploadedImage);
+  let consoleId: number;
 
-  const consoleItem = await prisma.console.create({
-    data: {
-      name: parsed.data.name,
-      manufacturer: parsed.data.manufacturer,
-      releasedate: new Date(parsed.data.releasedate),
-      description: parsed.data.description,
-      image,
-    },
-  });
+  try {
+    const uploadedImage = await saveGameCover(formData.get("image"), parsed.data.name);
+    const image = resolveCoverName(uploadedImage);
+
+    const consoleItem = await prisma.console.create({
+      data: {
+        name: parsed.data.name,
+        manufacturer: parsed.data.manufacturer,
+        releasedate: new Date(parsed.data.releasedate),
+        description: parsed.data.description,
+        image,
+      },
+    });
+
+    consoleId = consoleItem.id;
+  } catch (error) {
+    return {
+      formError:
+        error instanceof Error
+          ? error.message
+          : "No fue posible guardar la consola en este momento.",
+      fieldErrors: {},
+      values: rawValues,
+    };
+  }
 
   revalidatePath("/consoles");
-  redirect(`/consoles/${consoleItem.id}?alert=console-created`);
+  redirect(`/consoles/${consoleId}?alert=console-created`);
 }
 
 export default async function CreateConsolePage() {

@@ -43,24 +43,39 @@ async function createGame(_: CrudFormState, formData: FormData): Promise<CrudFor
     }
   }
 
-  const uploadedCover = await saveGameCover(formData.get('cover'), parsed.data.title)
-  const cover = resolveCoverName(uploadedCover)
+  let gameId: number
 
-  const game = await prisma.game.create({
-    data: {
-      title: parsed.data.title,
-      cover,
-      developer: parsed.data.developer,
-      releasedate: new Date(parsed.data.releasedate),
-      price: parsed.data.price,
-      genre: parsed.data.genre,
-      description: parsed.data.description,
-      console_id: parsed.data.console_id,
-    },
-  })
+  try {
+    const uploadedCover = await saveGameCover(formData.get('cover'), parsed.data.title)
+    const cover = resolveCoverName(uploadedCover)
+
+    const game = await prisma.game.create({
+      data: {
+        title: parsed.data.title,
+        cover,
+        developer: parsed.data.developer,
+        releasedate: new Date(parsed.data.releasedate),
+        price: parsed.data.price,
+        genre: parsed.data.genre,
+        description: parsed.data.description,
+        console_id: parsed.data.console_id,
+      },
+    })
+
+    gameId = game.id
+  } catch (error) {
+    return {
+      formError:
+        error instanceof Error
+          ? error.message
+          : 'No fue posible guardar el juego en este momento.',
+      fieldErrors: {},
+      values: rawValues,
+    }
+  }
 
   revalidatePath('/games')
-  redirect(`/games/${game.id}?alert=game-created`)
+  redirect(`/games/${gameId}?alert=game-created`)
 }
 
 export default async function CreateGamePage() {
