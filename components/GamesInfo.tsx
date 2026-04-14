@@ -32,7 +32,7 @@ export default async function GamesInfo({ searchParams }: GamesInfoProps) {
 
           <Link
             href="/games/create"
-            className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-red-600 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:scale-[1.02] hover:shadow-fuchsia-500/20"
+            className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:scale-[1.02] hover:shadow-fuchsia-500/20"
           >
             + Agregar juego
           </Link>

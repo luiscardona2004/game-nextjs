@@ -57,7 +57,7 @@ export default async function DashboardPage() {
             </p>
             <h1 className="text-xl font-bold md:text-2xl">Resumen del catalogo</h1>
             <p className="mt-1 text-sm text-gray-400">
-              Visualiza rapido cuantos juegos y consolas tienes registradas.
+              juegos y consolas registradas.
             </p>
           </div>
 

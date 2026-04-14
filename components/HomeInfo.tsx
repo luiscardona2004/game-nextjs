@@ -7,8 +7,8 @@ export default function HomeInfo() {
   return (
     <div className=" bg-[#1db9e9] bg-[url(/img/bg-home-image.png)] min-h-dvh flex flex-col gap-2 p-4 items-center justify-center overflow-hidden">
       <div className="hero">
-        <div className="hero-overlay "></div>
-        <div className="hero-content text-neutral-content text-center">
+        <div className="hero-overlay bg-black/80 w-120"></div>
+        <div className="hero-content text-neutral-content text-center ">
           <div className="max-w-md">
             <img
              src="/img/logo.png"
@@ -23,12 +23,12 @@ export default function HomeInfo() {
             </p>
 
             <Link href="handler/sign-in" className="btn btn-outline me-4 px-10">
-              <UserPlus size={28} />
+              <FingerprintSimple size={32} />
               SignIn
             </Link>
 
             <Link href="handler/sign-up" className="btn btn-outline me-4 px-10">
-              <FingerprintSimple size={32} />
+              <UserPlus size={28} />
               SignUp
             </Link>
           </div>

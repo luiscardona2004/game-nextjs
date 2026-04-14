@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import {
+  getImageValidationHint,
+  IMAGE_INPUT_ACCEPT,
+  validateImageFile,
+} from "@/lib/image-validation";
 
 type GameImageInputProps = {
   inputId?: string;
@@ -25,6 +30,7 @@ export default function GameImageInput({
   }, [currentImage]);
 
   const [previewUrl, setPreviewUrl] = useState(fallbackImage);
+  const [fileError, setFileError] = useState("");
 
   useEffect(() => {
     setPreviewUrl(fallbackImage);
@@ -34,6 +40,17 @@ export default function GameImageInput({
     const file = event.target.files?.[0];
 
     if (!file) {
+      setFileError("");
+      setPreviewUrl(fallbackImage);
+      return;
+    }
+
+    try {
+      validateImageFile(file);
+      setFileError("");
+    } catch (error) {
+      setFileError(error instanceof Error ? error.message : "La imagen seleccionada no es valida.");
+      event.target.value = "";
       setPreviewUrl(fallbackImage);
       return;
     }
@@ -75,11 +92,13 @@ export default function GameImageInput({
             id={inputId}
             name={inputName}
             type="file"
-            accept="image/*"
+            accept={IMAGE_INPUT_ACCEPT}
             onChange={handleChange}
             className="w-full rounded-2xl border border-white/10 bg-[#11182d] px-4 py-3 text-sm text-white outline-none transition file:mr-4 file:rounded-xl file:border-0 file:bg-cyan-500/15 file:px-4 file:py-2 file:text-sm file:font-medium file:text-cyan-300 hover:file:bg-cyan-500/30 focus:border-cyan-400"
           />
           <p className="mt-2 text-xs text-gray-500">{helperText}</p>
+          <p className="mt-1 text-xs text-gray-500">{getImageValidationHint()}</p>
+          {fileError && <p className="mt-2 text-sm text-rose-300">{fileError}</p>}
         </div>
       </div>
     </div>

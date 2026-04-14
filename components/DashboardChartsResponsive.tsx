@@ -105,9 +105,9 @@ export default function DashboardChartsResponsive({
           <p className="text-xs uppercase tracking-[0.25em] text-fuchsia-300/80 sm:text-sm">
             Lanzamientos
           </p>
-          <h2 className="mt-2 text-lg font-bold text-white sm:text-xl">Juegos por ano</h2>
+          <h2 className="mt-2 text-lg font-bold text-white sm:text-xl">Juegos por año</h2>
           <p className="mt-2 text-sm text-gray-400">
-            Distribucion de juegos segun el ano de lanzamiento.
+            Distribucion de juegos segun el año de lanzamiento.
           </p>
         </div>
 

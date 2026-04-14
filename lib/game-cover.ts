@@ -1,24 +1,26 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import {
+  ALLOWED_IMAGE_EXTENSIONS,
+  validateImageFile,
+} from "@/lib/image-validation";
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "img");
 const DEFAULT_COVER = "no-image.png";
 
 function getSafeExtension(fileName: string) {
   const extension = path.extname(fileName).toLowerCase();
-  const allowedExtensions = new Set([".png", ".jpg", ".jpeg", ".webp", ".gif"]);
+  const allowedExtensions = new Set(ALLOWED_IMAGE_EXTENSIONS);
 
   return allowedExtensions.has(extension) ? extension : ".png";
 }
 
 export async function saveGameCover(file: FormDataEntryValue | null, baseName: string) {
-  if (!(file instanceof File) || file.size === 0) {
+  if (!(file instanceof File)) {
     return null;
   }
 
-  if (!file.type.startsWith("image/")) {
-    throw new Error("El archivo seleccionado debe ser una imagen.");
-  }
+  validateImageFile(file);
 
   await mkdir(UPLOAD_DIR, { recursive: true });
 
