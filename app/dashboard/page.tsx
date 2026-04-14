@@ -1,6 +1,6 @@
 import { PrismaClient } from "../generated/prisma";
 import { PrismaNeon } from "@prisma/adapter-neon";
-import DashboardCharts from "@/components/DashboardCharts";
+import DashboardChartsResponsive from "@/components/DashboardChartsResponsive";
 import SideBar from "@/components/SideBar";
 import { stackServerApp } from "@/stack/server";
 import { redirect } from "next/navigation";
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
   return (
     <SideBar currentPath="/dashboard">
       <div className="bg-[#0a0f1f] text-white">
-        <div className="mx-auto flex h-[calc(100vh-7rem)] max-w-7xl flex-col gap-3 overflow-hidden p-3">
+        <div className="mx-auto flex min-h-[calc(100dvh-7rem)] max-w-7xl flex-col gap-3 p-3">
           <div className="rounded-3xl border border-white/10 bg-white/5 p-4 shadow-2xl backdrop-blur-md">
             <p className="mb-2 text-sm uppercase tracking-[0.25em] text-fuchsia-400/80">
               Dashboard
@@ -77,8 +77,11 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          <div className="min-h-0 flex-1 overflow-hidden">
-            <DashboardCharts consolesByGames={consolesByGames} gamesPerYear={gamesPerYear} />
+          <div className="flex-1">
+            <DashboardChartsResponsive
+              consolesByGames={consolesByGames}
+              gamesPerYear={gamesPerYear}
+            />
           </div>
         </div>
       </div>

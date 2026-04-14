@@ -6,6 +6,15 @@ import Image from 'next/image'
 import { revalidatePath } from 'next/cache'
 import FormActionButton from '@/components/FormActionButton'
 
+function formatStableDate(date: Date | string) {
+    const parsedDate = new Date(date)
+    const day = String(parsedDate.getUTCDate()).padStart(2, '0')
+    const month = String(parsedDate.getUTCMonth() + 1).padStart(2, '0')
+    const year = parsedDate.getUTCFullYear()
+
+    return `${day}/${month}/${year}`
+}
+
 const prisma = new PrismaClient({
     adapter: new PrismaNeon({
         connectionString: process.env.DATABASE_URL!,
@@ -126,7 +135,7 @@ export default async function GameDetail({ params }: GameDetailProps) {
                                         Lanzamiento
                                     </p>
                                     <p className="mt-1 text-sm font-medium text-white">
-                                        {new Date(game.releasedate).toLocaleDateString()}
+                                        {formatStableDate(game.releasedate)}
                                     </p>
                                 </div>
                             </div>
