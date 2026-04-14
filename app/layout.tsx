@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { StackProvider, StackTheme } from "@stackframe/stack";
+import { Suspense } from "react";
 import AppAlertHost from "@/components/AppAlertHost";
 import { stackClientApp } from "../stack/client";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -30,7 +31,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       ><StackProvider app={stackClientApp}><StackTheme>
-        <AppAlertHost />
+        <Suspense fallback={null}>
+          <AppAlertHost />
+        </Suspense>
         {children}
       </StackTheme></StackProvider></body>
     </html>
