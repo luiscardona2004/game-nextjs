@@ -63,7 +63,7 @@ async function updateConsole(_: CrudFormState, formData: FormData): Promise<Crud
 
   revalidatePath("/consoles");
   revalidatePath(`/consoles/${consoleItem.id}`);
-  redirect(`/consoles/${consoleItem.id}`);
+  redirect(`/consoles/${consoleItem.id}?alert=console-updated`);
 }
 
 function formatDateForInput(date: Date) {

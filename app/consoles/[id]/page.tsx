@@ -2,9 +2,9 @@ import { PrismaClient } from "../../generated/prisma";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { revalidatePath } from "next/cache";
 import FormActionButton from "@/components/FormActionButton";
+import { resolveStoredImageSrc } from "@/lib/image-src";
 
 function formatStableDate(date: Date | string) {
   const parsedDate = new Date(date);
@@ -39,7 +39,7 @@ async function deleteConsole(formData: FormData) {
 
   await prisma.console.delete({ where: { id } });
   revalidatePath("/consoles");
-  redirect("/consoles");
+  redirect("/consoles?alert=console-deleted");
 }
 
 type ConsoleDetailProps = {
@@ -75,7 +75,7 @@ export default async function ConsoleDetail({ params }: ConsoleDetailProps) {
             <div className="flex items-start justify-center border-b border-white/10 bg-black/20 p-6 md:border-b-0 md:border-r md:p-8">
               <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#11182d] p-2 shadow-xl">
                 <div className="relative h-[180px] w-[180px] overflow-hidden rounded-xl">
-                  <Image src={`/img/${consoleItem.image}`} alt={consoleItem.name} fill className="object-cover" />
+                  <img src={resolveStoredImageSrc(consoleItem.image)} alt={consoleItem.name} className="h-full w-full object-cover" />
                 </div>
               </div>
             </div>

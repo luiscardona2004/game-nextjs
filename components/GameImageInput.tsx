@@ -6,6 +6,7 @@ import {
   IMAGE_INPUT_ACCEPT,
   validateImageFile,
 } from "@/lib/image-validation";
+import { resolveStoredImageSrc } from "@/lib/image-src";
 
 type GameImageInputProps = {
   inputId?: string;
@@ -26,7 +27,7 @@ export default function GameImageInput({
   const previewHeight = 250;
 
   const fallbackImage = useMemo(() => {
-    return currentImage?.trim() ? `/img/${currentImage}` : "/img/no-image.png";
+    return resolveStoredImageSrc(currentImage);
   }, [currentImage]);
 
   const [previewUrl, setPreviewUrl] = useState(fallbackImage);

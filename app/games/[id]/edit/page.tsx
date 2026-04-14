@@ -71,7 +71,7 @@ async function updateGame(_: CrudFormState, formData: FormData): Promise<CrudFor
 
   revalidatePath('/games')
   revalidatePath(`/games/${game.id}`)
-  redirect(`/games/${game.id}`)
+  redirect(`/games/${game.id}?alert=game-updated`)
 }
 
 function formatDateForInput(date: Date) {

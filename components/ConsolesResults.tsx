@@ -1,9 +1,10 @@
 import { PrismaClient } from "../app/generated/prisma";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import Link from "next/link";
-import Image from "next/image";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import FormActionButton from "./FormActionButton";
+import { resolveStoredImageSrc } from "@/lib/image-src";
 
 const prisma = new PrismaClient({
   adapter: new PrismaNeon({
@@ -15,6 +16,7 @@ async function deleteConsole(formData: FormData) {
   "use server";
 
   const id = Number(formData.get("id"));
+  const redirectTo = String(formData.get("redirect_to") ?? "/consoles");
 
   if (Number.isNaN(id)) {
     throw new Error("ID de consola invalido.");
@@ -38,6 +40,7 @@ async function deleteConsole(formData: FormData) {
   });
 
   revalidatePath("/consoles");
+  redirect(`${redirectTo}${redirectTo.includes("?") ? "&" : "?"}alert=console-deleted`);
 }
 
 type ConsolesResultsProps = {
@@ -110,7 +113,7 @@ export default async function ConsolesResults({ page, search }: ConsolesResultsP
               className="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 shadow-xl"
             >
               <div className="relative h-48 w-full overflow-hidden">
-                <Image src={`/img/${consoleItem.image}`} alt={consoleItem.name} fill className="object-cover" />
+                <img src={resolveStoredImageSrc(consoleItem.image)} alt={consoleItem.name} className="h-full w-full object-cover" />
               </div>
 
               <div className="p-4">
@@ -137,6 +140,7 @@ export default async function ConsolesResults({ page, search }: ConsolesResultsP
                   ) : (
                     <form action={deleteConsole}>
                       <input type="hidden" name="id" value={consoleItem.id} />
+                      <input type="hidden" name="redirect_to" value={`/consoles${createPageLink(currentPage)}`} />
                       <FormActionButton
                         label="Eliminar"
                         pendingLabel="Eliminando..."

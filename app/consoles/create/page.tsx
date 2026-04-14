@@ -54,7 +54,7 @@ async function createConsole(_: CrudFormState, formData: FormData): Promise<Crud
   });
 
   revalidatePath("/consoles");
-  redirect(`/consoles/${consoleItem.id}`);
+  redirect(`/consoles/${consoleItem.id}?alert=console-created`);
 }
 
 export default async function CreateConsolePage() {
@@ -88,6 +88,7 @@ export default async function CreateConsolePage() {
               cancelHref="/consoles"
               submitLabel="Guardar consola"
               pendingLabel="Guardando..."
+              confirmMessage="Estas seguro de guardar esta consola?"
               submitClassName="rounded-2xl bg-gradient-to-r from-fuchsia-600 to-cyan-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:scale-[1.02] hover:shadow-fuchsia-500/20"
               action={createConsole}
             />

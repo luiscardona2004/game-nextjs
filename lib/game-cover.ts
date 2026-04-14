@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { put } from "@vercel/blob";
 import {
   ALLOWED_IMAGE_EXTENSIONS,
   validateImageFile,
@@ -32,9 +33,20 @@ export async function saveGameCover(file: FormDataEntryValue | null, baseName: s
     .slice(0, 40) || "game-cover";
 
   const fileName = `${normalizedBaseName}-${Date.now()}${extension}`;
-  const filePath = path.join(UPLOAD_DIR, fileName);
   const buffer = Buffer.from(await file.arrayBuffer());
 
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    const blob = await put(`catalog/${fileName}`, buffer, {
+      access: "public",
+      contentType: file.type,
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+      addRandomSuffix: true,
+    });
+
+    return blob.url;
+  }
+
+  const filePath = path.join(UPLOAD_DIR, fileName);
   await writeFile(filePath, buffer);
 
   return fileName;

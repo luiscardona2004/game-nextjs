@@ -1,9 +1,10 @@
 import { PrismaClient } from "../app/generated/prisma";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import Link from "next/link";
-import Imagen from "next/image";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import FormActionButton from "./FormActionButton";
+import { resolveStoredImageSrc } from "@/lib/image-src";
 
 const prisma = new PrismaClient({
   adapter: new PrismaNeon({
@@ -15,6 +16,7 @@ async function deleteGame(formData: FormData) {
   "use server";
 
   const id = Number(formData.get("id"));
+  const redirectTo = String(formData.get("redirect_to") ?? "/games");
 
   if (Number.isNaN(id)) {
     throw new Error("ID de juego invalido.");
@@ -25,6 +27,7 @@ async function deleteGame(formData: FormData) {
   });
 
   revalidatePath("/games");
+  redirect(`${redirectTo}${redirectTo.includes("?") ? "&" : "?"}alert=game-deleted`);
 }
 
 type GamesResultsProps = {
@@ -121,11 +124,10 @@ export default async function GamesResults({ page, search }: GamesResultsProps) 
               className="group overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/10 to-white/5 shadow-xl transition duration-300 hover:-translate-y-1 hover:border-cyan-400/30"
             >
               <div className="relative h-56 w-full overflow-hidden">
-                <Imagen
-                  src={`/img/${game.cover}`}
+                <img
+                  src={resolveStoredImageSrc(game.cover)}
                   alt={game.title}
-                  fill
-                  className="object-cover transition duration-500 group-hover:scale-110"
+                  className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
@@ -165,6 +167,7 @@ export default async function GamesResults({ page, search }: GamesResultsProps) 
 
                   <form action={deleteGame}>
                     <input type="hidden" name="id" value={game.id} />
+                    <input type="hidden" name="redirect_to" value={`/games${createPageLink(currentPage)}`} />
                     <FormActionButton
                       label="Eliminar"
                       pendingLabel="Eliminando..."

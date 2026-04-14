@@ -2,9 +2,9 @@ import { PrismaClient } from '../../generated/prisma'
 import { PrismaNeon } from '@prisma/adapter-neon'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
-import Image from 'next/image'
 import { revalidatePath } from 'next/cache'
 import FormActionButton from '@/components/FormActionButton'
+import { resolveStoredImageSrc } from '@/lib/image-src'
 
 function formatStableDate(date: Date | string) {
     const parsedDate = new Date(date)
@@ -35,7 +35,7 @@ async function deleteGame(formData: FormData) {
     })
 
     revalidatePath('/games')
-    redirect('/games')
+    redirect('/games?alert=game-deleted')
 }
 
 type GameDetailProps = {
@@ -77,11 +77,10 @@ export default async function GameDetail({ params }: GameDetailProps) {
                         {/* Imagen */}
                     
                         <div className="relative h-56 w-full overflow-hidden">
-                            <Image
-                                src={`/img/${game.cover}`}
+                            <img
+                                src={resolveStoredImageSrc(game.cover)}
                                 alt={game.title}
-                                fill
-                                className="object-cover transition duration-500 group-hover:scale-110"
+                                className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 

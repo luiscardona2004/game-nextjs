@@ -60,7 +60,7 @@ async function createGame(_: CrudFormState, formData: FormData): Promise<CrudFor
   })
 
   revalidatePath('/games')
-  redirect(`/games/${game.id}`)
+  redirect(`/games/${game.id}?alert=game-created`)
 }
 
 export default async function CreateGamePage() {
@@ -104,6 +104,7 @@ export default async function CreateGamePage() {
               cancelHref="/games"
               submitLabel="Guardar juego"
               pendingLabel="Guardando..."
+              confirmMessage="Estas seguro de guardar este juego?"
               submitClassName="rounded-2xl bg-gradient-to-r from-fuchsia-600 to-cyan-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:scale-[1.02] hover:shadow-fuchsia-500/20"
               action={createGame}
             />

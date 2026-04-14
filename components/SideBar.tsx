@@ -1,6 +1,7 @@
 "use client";
 import { UserButton } from "@stackframe/stack";
 import Link from "next/link";
+import SignOutButton from "@/components/SignOutButton";
 import { SquaresFourIcon, JoystickIcon, PlusIcon, GearIcon, ComputerTowerIcon } from "@phosphor-icons/react";
 
 export default function SideBar({
@@ -32,7 +33,8 @@ export default function SideBar({
                         </svg>
                         GameNextJS
                     </div>
-                    <div className="ms-auto">
+                    <div className="ms-auto flex items-center gap-3">
+                        <SignOutButton />
                         <UserButton showUserInfo />
                     </div>     
                 </nav>
