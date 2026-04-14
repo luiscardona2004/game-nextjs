@@ -10,7 +10,7 @@ const DEFAULT_COVER = "no-image.png";
 
 function getSafeExtension(fileName: string) {
   const extension = path.extname(fileName).toLowerCase();
-  const allowedExtensions = new Set(ALLOWED_IMAGE_EXTENSIONS);
+  const allowedExtensions = new Set<string>(ALLOWED_IMAGE_EXTENSIONS);
 
   return allowedExtensions.has(extension) ? extension : ".png";
 }

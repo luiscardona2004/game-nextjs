@@ -73,9 +73,15 @@ export function getValidationErrorMessage(error: z.ZodError) {
 }
 
 export function getValidationFieldErrors(error: z.ZodError): CrudFieldErrors {
-  return Object.fromEntries(
-    Object.entries(error.flatten().fieldErrors)
-      .map(([key, messages]) => [key, messages?.[0]])
-      .filter((entry): entry is [string, string] => typeof entry[1] === "string")
-  );
+  const fieldErrors: CrudFieldErrors = {};
+
+  for (const issue of error.issues) {
+    const fieldName = issue.path[0];
+
+    if (typeof fieldName === "string" && !fieldErrors[fieldName]) {
+      fieldErrors[fieldName] = issue.message;
+    }
+  }
+
+  return fieldErrors;
 }
